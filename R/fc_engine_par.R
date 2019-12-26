@@ -1,3 +1,11 @@
+packrat::disable()
+load_git_rep <- function(pkg) {
+  devtools::install_github(paste("xavierkamp/", pkg, sep = ""),
+                           auth_token = "bdea47dff495e7faaca2839db3942d18fed75a25")
+  eval(parse(text = paste("library(", pkg, ")", sep = "")))
+}
+load_git_rep("tsForecastR")
+
 #' Forecasting Engine API
 #' @description Function which enables the user to select different forecasting algorithms ranging from
 #' traditional time series models (i.e. ARIMA, ETS, STL) to machine learning methods (i.e. LSTM, AutoML).
@@ -79,15 +87,10 @@ generate_fc_par <- function(mts_data, fc_horizon = 12,
   `%>%` <- magrittr::`%>%`
   `%do%` <- foreach::`%do%`
   `%dopar%` <- foreach::`%dopar%`
-  if (!require(tsForecastR)) {
-    devtools::install_github("xavierkamp/tsForecastR",
-                             auth_token = "bdea47dff495e7faaca2839db3942d18fed75a25")
-    library(tsForecastR)
-  }
-  library(tsForecastR)
+  load_git_rep("tsForecastR")
   model_output <- base::list()
-  mts_data_xts <- check_data_sv_as_xts(mts_data, default_colname = "time_series")
-  xreg_data_xts <- check_data_sv_as_xts(xreg_data, default_colname = "feature")
+  mts_data_xts <- tsForecastR::check_data_sv_as_xts(mts_data, default_colname = "time_series")
+  xreg_data_xts <- tsForecastR::check_data_sv_as_xts(xreg_data, default_colname = "feature")
   if (!base::is.null(xreg_data_xts)) {
     keys_in_col <- base::colnames(xreg_data_xts) %>% stringr::str_detect("__")
     print(base::paste("Info about specified regressors: \n",
@@ -99,13 +102,13 @@ generate_fc_par <- function(mts_data, fc_horizon = 12,
                       base::sum(keys_in_col),
                       sep = ""))
   }
-  fc_horizon <- check_fc_horizon(fc_horizon)
-  model_names <- check_model_names(model_names)
-  models_args <- check_models_args(models_args, model_names)
-  backtesting_opt <- check_backtesting_opt(backtesting_opt)
-  save_fc_to_file <- check_save_fc_to_file(save_fc_to_file)
-  nb_cores <- check_nb_cores(nb_cores)
-  time_id <- check_time_id(time_id)
+  fc_horizon <- tsForecastR::check_fc_horizon(fc_horizon)
+  model_names <- tsForecastR::check_model_names(model_names)
+  models_args <- tsForecastR::check_models_args(models_args, model_names)
+  backtesting_opt <- tsForecastR::check_backtesting_opt(backtesting_opt)
+  save_fc_to_file <- tsForecastR::check_save_fc_to_file(save_fc_to_file)
+  nb_cores <- tsForecastR::check_nb_cores(nb_cores)
+  time_id <- tsForecastR::check_time_id(time_id)
   ind_seq <- base::seq(base::ncol(mts_data_xts))
   cl <- parallel::makeCluster(nb_cores)
   doParallel::registerDoParallel(cl)
@@ -118,39 +121,40 @@ generate_fc_par <- function(mts_data, fc_horizon = 12,
                                  "save_fc_to_file",
                                  "preprocess_fct",
                                  "time_id",
-                                 "models_args")) %dopar% {
-                                   library(tsForecastR)
-                                   model_names_parall_proc <- model_names[model_names != "automl_h2o"]
-                                   ts_data_xts <- univariate_xts(mts_data_xts, ind)
-                                   ts_colname <- base::colnames(ts_data_xts)
-                                   model_output_cores <- base::list()
-                                   for (model_name in model_names_parall_proc) {
-                                     base::eval(base::parse(text = base::paste("model_output_cores$", ts_colname, "$",
-                                                                               model_name, " <- ",
-                                                                               "generate_fc_", model_name, "(",
-                                                                               "ts_data_xts = ts_data_xts, ",
-                                                                               "xreg_xts = xreg_data_xts, ",
-                                                                               "fc_horizon = fc_horizon, ",
-                                                                               "backtesting_opt = backtesting_opt, ",
-                                                                               "save_fc_to_file = save_fc_to_file, ",
-                                                                               "preprocess_fct = preprocess_fct, ",
-                                                                               "time_id = time_id, ",
-                                                                               model_name, "_arg = models_args$",
-                                                                               model_name, "_arg)",
-                                                                               sep = "")))
-                                   }
-                                   return(model_output_cores)
-                                 }
+                                 "models_args",
+                                 "load_git_rep")) %dopar% {
+     load_git_rep("tsForecastR")
+     model_names_parall_proc <- model_names[model_names != "automl_h2o"]
+     ts_data_xts <- tsForecastR::univariate_xts(mts_data_xts, ind)
+     ts_colname <- base::colnames(ts_data_xts)
+     model_output_cores <- base::list()
+     for (model_name in model_names_parall_proc) {
+       base::eval(base::parse(text = base::paste("model_output_cores$", ts_colname, "$",
+                                                 model_name, " <- ",
+                                                 "tsForecastR::generate_fc_", model_name, "(",
+                                                 "ts_data_xts = ts_data_xts, ",
+                                                 "xreg_xts = xreg_data_xts, ",
+                                                 "fc_horizon = fc_horizon, ",
+                                                 "backtesting_opt = backtesting_opt, ",
+                                                 "save_fc_to_file = save_fc_to_file, ",
+                                                 "preprocess_fct = preprocess_fct, ",
+                                                 "time_id = time_id, ",
+                                                 model_name, "_arg = models_args$",
+                                                 model_name, "_arg)",
+                                                 sep = "")))
+     }
+     return(model_output_cores)
+   }
   model_output <- model_output_ls[[1]]
   parallel::stopCluster(cl)
   foreach::foreach(ind = ind_seq) %do% {
     model_names_parall_proc <- model_names[model_names == "automl_h2o"]
-    ts_data_xts <- univariate_xts(mts_data_xts, ind)
+    ts_data_xts <- tsForecastR::univariate_xts(mts_data_xts, ind)
     ts_colname <- base::colnames(ts_data_xts)
     for (model_name in model_names_parall_proc) {
       base::eval(base::parse(text = base::paste("model_output$", ts_colname, "$",
                                                 model_name, " <- ",
-                                                "generate_fc_", model_name, "(",
+                                                "tsForecastR::generate_fc_", model_name, "(",
                                                 "ts_data_xts = ts_data_xts, ",
                                                 "xreg_xts = xreg_data_xts, ",
                                                 "fc_horizon = fc_horizon, ",

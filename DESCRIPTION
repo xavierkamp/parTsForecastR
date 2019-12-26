@@ -1,12 +1,15 @@
 Package: parTsForecastR
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Parallel Processing enabled forecasting with Traditional Time Series and Machine Learning Models
 Version: 0.1.0
 Author: Who wrote it
 Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Description: Extension of the R package 'tsForecastR': enables to process time series in parallel.
+Depends:
+    R (>= 3.6.0)
+Remote:
+    github::xavierkamp/tsForecastR
+License: GPT-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.0.2
