@@ -1,11 +1,3 @@
-packrat::disable()
-load_git_rep <- function(pkg) {
-  devtools::install_github(paste("xavierkamp/", pkg, sep = ""),
-                           auth_token = "bdea47dff495e7faaca2839db3942d18fed75a25")
-  eval(parse(text = paste("library(", pkg, ")", sep = "")))
-}
-load_git_rep("tsForecastR")
-
 #' Forecasting Engine API
 #' Forecasting Engine API (parallel processing)
 #' @description Function which enables the user to select different forecasting algorithms ranging from
@@ -88,7 +80,6 @@ generate_fc_par <- function(mts_data, fc_horizon = 12,
   `%>%` <- magrittr::`%>%`
   `%do%` <- foreach::`%do%`
   `%dopar%` <- foreach::`%dopar%`
-  load_git_rep("tsForecastR")
   model_output <- base::list()
   mts_data_xts <- tsForecastR::check_data_sv_as_xts(mts_data, default_colname = "time_series")
   xreg_data_xts <- tsForecastR::check_data_sv_as_xts(xreg_data, default_colname = "feature")
@@ -124,7 +115,7 @@ generate_fc_par <- function(mts_data, fc_horizon = 12,
                                  "time_id",
                                  "models_args",
                                  "load_git_rep")) %dopar% {
-     load_git_rep("tsForecastR")
+     library("tsForecastR")
      model_names_parall_proc <- model_names[model_names != "automl_h2o"]
      ts_data_xts <- tsForecastR::univariate_xts(mts_data_xts, ind)
      ts_colname <- base::colnames(ts_data_xts)

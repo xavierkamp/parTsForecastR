@@ -2,7 +2,8 @@
 % Please edit documentation in R/fc_engine_par.R
 \name{generate_fc_par}
 \alias{generate_fc_par}
-\title{Forecasting Engine API}
+\title{Forecasting Engine API
+Forecasting Engine API (parallel processing)}
 \usage{
 generate_fc_par(
   mts_data,
