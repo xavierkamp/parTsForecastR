@@ -1,4 +1,4 @@
-#' Forecasting Engine API
+#' Forecasting Engine API (parallel processing)
 #' @description Function which enables the user to select different forecasting algorithms ranging from
 #' traditional time series models (i.e. ARIMA, ETS, STL) to machine learning methods (i.e. LSTM, AutoML).
 #' @param mts_data A univariate or multivariate ts, mts or xts object
