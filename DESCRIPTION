@@ -7,8 +7,6 @@ Maintainer: The package maintainer <yourself@somewhere.net>
 Description: Extension of the R package 'tsForecastR': enables to process time series in parallel.
 Depends:
     R (>= 3.6.0)
-Imports:
-    tsForecastR
 Remotes:
     github::xavierkamp/tsForecastR
 License: GPL-3
