@@ -22,6 +22,8 @@ library(tsForecastR)
 #'
 #' @param model_names A list or character, names of models to apply
 #' @param model_args A list, optional arguments to pass to the models
+#' @param preprocess_fct A function, a custom function can be used to determine how missing values should be dealt with.
+#' (e.g. timeSeries::na.contiguous or imputeTS::na.mean)
 #' @param save_fc_to_file A string, directory to which results can be saved as text files
 #' @param time_id A POSIXct, created with \code{\link[base]{Sys.time}} and appended to results
 #' @param use_parallel A boolean, apply parallel processing
@@ -103,6 +105,7 @@ generate_fc_par <- function(mts_data, fc_horizon = 12,
   models_args <- tsForecastR::check_models_args(models_args, model_names)
   backtesting_opt <- tsForecastR::check_backtesting_opt(backtesting_opt)
   save_fc_to_file <- tsForecastR::check_save_fc_to_file(save_fc_to_file)
+  preprocess_fct <- check_preprocess_fct(preprocess_fct)
   nb_cores <- tsForecastR::check_nb_cores(nb_cores)
   time_id <- tsForecastR::check_time_id(time_id)
   ind_seq <- base::seq(base::ncol(mts_data_xts))
