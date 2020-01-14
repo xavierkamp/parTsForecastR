@@ -62,7 +62,7 @@ library(tsForecastR)
 #'                       backtesting_opt = list(use_bt = TRUE,
 #'                                              nb_iters = 6))
 #' ## End (Not run)
-#' @return A list
+#' @return A tsForecastR object
 #' @export
 generate_fc_par <- function(mts_data, fc_horizon = 12,
                             xreg_data = NULL,
@@ -84,7 +84,7 @@ generate_fc_par <- function(mts_data, fc_horizon = 12,
   `%>%` <- magrittr::`%>%`
   `%do%` <- foreach::`%do%`
   `%dopar%` <- foreach::`%dopar%`
-  model_output <- base::list()
+  model_output <- ini_model_output()
   mts_data_xts <- tsForecastR::check_data_sv_as_xts(mts_data, default_colname = "time_series")
   xreg_data_xts <- tsForecastR::check_data_sv_as_xts(xreg_data, default_colname = "feature")
   if (!base::is.null(xreg_data_xts)) {
