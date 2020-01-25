@@ -1,6 +1,4 @@
 
-library(tsForecastR)
-
 #' Forecasting Engine API (parallel processing)
 #' @description Function which enables the user to select different forecasting algorithms ranging from
 #' traditional time series models (i.e. ARIMA, ETS, STL) to machine learning methods (i.e. LSTM, AutoML).
@@ -103,7 +101,7 @@ generate_fc_par <- function(mts_data, fc_horizon = 12,
   models_args <- tsForecastR::check_models_args(models_args, model_names)
   backtesting_opt <- tsForecastR::check_backtesting_opt(backtesting_opt)
   save_fc_to_file <- tsForecastR::check_save_fc_to_file(save_fc_to_file)
-  preprocess_fct <- check_preprocess_fct(preprocess_fct)
+  preprocess_fct <- tsForecastR::check_preprocess_fct(preprocess_fct)
   nb_cores <- tsForecastR::check_nb_cores(nb_cores)
   time_id <- tsForecastR::check_time_id(time_id)
   ind_seq <- base::seq(base::ncol(mts_data_xts))
@@ -142,7 +140,7 @@ generate_fc_par <- function(mts_data, fc_horizon = 12,
      }
      return(model_output_cores)
      }
-  names(model_output_ls) <- base::colnames(mts_data_xts)
+  base::names(model_output_ls) <- base::colnames(mts_data_xts)
   model_output <- model_output_ls
   parallel::stopCluster(cl)
   foreach::foreach(ind = ind_seq) %do% {
