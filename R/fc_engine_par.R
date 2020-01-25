@@ -1,5 +1,4 @@
-devtools::install_github("xavierkamp/tsForecastR",
-                         auth_token = "bdea47dff495e7faaca2839db3942d18fed75a25")
+
 library(tsForecastR)
 
 #' Forecasting Engine API (parallel processing)
