@@ -2,7 +2,6 @@ devtools::install_github("xavierkamp/tsForecastR",
                          auth_token = "bdea47dff495e7faaca2839db3942d18fed75a25")
 library(tsForecastR)
 
-#' Forecasting Engine API
 #' Forecasting Engine API (parallel processing)
 #' @description Function which enables the user to select different forecasting algorithms ranging from
 #' traditional time series models (i.e. ARIMA, ETS, STL) to machine learning methods (i.e. LSTM, AutoML).
@@ -86,7 +85,7 @@ generate_fc_par <- function(mts_data, fc_horizon = 12,
   `%>%` <- magrittr::`%>%`
   `%do%` <- foreach::`%do%`
   `%dopar%` <- foreach::`%dopar%`
-  model_output <- ini_model_output()
+  model_output <- model_output_ls <- base::list()
   mts_data_xts <- tsForecastR::check_data_sv_as_xts(mts_data, default_colname = "time_series")
   xreg_data_xts <- tsForecastR::check_data_sv_as_xts(xreg_data, default_colname = "feature")
   if (!base::is.null(xreg_data_xts)) {
@@ -128,7 +127,7 @@ generate_fc_par <- function(mts_data, fc_horizon = 12,
      ts_colname <- base::colnames(ts_data_xts)
      model_output_cores <- base::list()
      for (model_name in model_names_parall_proc) {
-       base::eval(base::parse(text = base::paste("model_output_cores$", ts_colname, "$",
+       base::eval(base::parse(text = base::paste("model_output_cores$",
                                                  model_name, " <- ",
                                                  "tsForecastR::generate_fc_", model_name, "(",
                                                  "ts_data_xts = ts_data_xts, ",
@@ -143,8 +142,9 @@ generate_fc_par <- function(mts_data, fc_horizon = 12,
                                                  sep = "")))
      }
      return(model_output_cores)
-   }
-  model_output <- model_output_ls[[1]]
+     }
+  names(model_output_ls) <- base::colnames(mts_data_xts)
+  model_output <- model_output_ls
   parallel::stopCluster(cl)
   foreach::foreach(ind = ind_seq) %do% {
     model_names_parall_proc <- model_names[model_names == "automl_h2o"]
@@ -167,5 +167,5 @@ generate_fc_par <- function(mts_data, fc_horizon = 12,
                                                 sep = "")))
     }
   }
-  return(model_output)
+  return(base::structure(model_output, class = "tsForecastR"))
 }

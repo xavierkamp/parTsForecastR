@@ -24,7 +24,9 @@ test_that("multiplication works", {
       c(data, rep(NA, 2), data) %>%
       stats::ts(., frequency = 12, start = c(1, 1)) %>%
       xts::as.xts()
-    expect_error(generate_fc_par(xts_na_data, model_names = model_names))
+    expect_equal(class(generate_fc_par(xts_na_data,
+                                       model_names = model_names)),
+                 "tsForecastR")
     expect_equal(class(generate_fc_par(xts_na_data,
                                        model_names = model_names,
                                        preprocess_fct = timeSeries::na.contiguous)),
