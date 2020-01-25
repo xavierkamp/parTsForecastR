@@ -7,10 +7,9 @@ Maintainer: Xavier Kamphaus
 Description: Extension of the R package 'tsForecastR': enables to process time series in parallel.
 Depends:
     R (>= 3.6.0)
+    github::xavierkamp/tsForecastR
 Suggests: 
     testthat (>= 2.1.0)
-Remotes:
-    github::xavierkamp/tsForecastR
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
