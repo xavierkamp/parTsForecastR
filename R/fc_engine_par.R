@@ -116,8 +116,7 @@ generate_fc_par <- function(mts_data, fc_horizon = 12,
                                  "save_fc_to_file",
                                  "preprocess_fct",
                                  "time_id",
-                                 "models_args",
-                                 "load_git_rep")) %dopar% {
+                                 "models_args")) %dopar% {
      library("tsForecastR")
      model_names_parall_proc <- model_names[model_names != "automl_h2o"]
      ts_data_xts <- tsForecastR::univariate_xts(mts_data_xts, ind)
