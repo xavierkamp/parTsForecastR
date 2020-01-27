@@ -1,3 +1,8 @@
+[![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![Travis build status](https://travis-ci.com/xavierkamp/parTsForecastR.svg?branch=master)](https://travis-ci.com/xavierkamp/parTsForecastR)
+[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/xavierkamp/parTsForecastR?branch=master&svg=true)](https://ci.appveyor.com/project/xavierkamp/parTsForecastR)
+[![Codecov test coverage](https://codecov.io/gh/xavierkamp/parTsForecastR/branch/master/graph/badge.svg)](https://codecov.io/gh/xavierkamp/parTsForecastR?branch=master)
+
 # __Time Series Forecasting with Parallel Processing__
 This package is an extension of the [tsForecastR](https://github.com/xavierkamp/tsForecastR) package. It uses a parallel processing framework to speed up forecast generation when multiple independent time series are present. To see the more details on the forecasting procedure, please inspect the [tsForecastR](https://github.com/xavierkamp/tsForecastR) package.
 

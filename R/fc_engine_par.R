@@ -1,10 +1,9 @@
-
 #' Forecasting Engine API (parallel processing)
 #' @description Function which enables the user to select different forecasting algorithms ranging from
 #' traditional time series models (i.e. ARIMA, ETS, STL) to machine learning methods (i.e. LSTM, AutoML).
 #' @param mts_data A univariate or multivariate ts, mts or xts object
 #' @param fc_horizon An integer, the forcasting horizon
-#' @param xreg_xts A univariate or multivariate ts, mts or xts object, optional external regressors
+#' @param xreg_data A univariate or multivariate ts, mts or xts object, optional external regressors
 #' @param backtesting_opt A list, options for the backtesting program:
 #'
 #'  use_bt - A boolean, to determine whether to apply backtesting or to generate forcasts on future dates
@@ -17,14 +16,15 @@
 #'  remain fixed across backtesting operations
 #'
 #' @param model_names A list or character, names of models to apply
-#' @param model_args A list, optional arguments to pass to the models
+#' @param models_args A list, optional arguments to pass to the models
 #' @param preprocess_fct A function, a custom function can be used to determine how missing values should be dealt with.
 #' (e.g. timeSeries::na.contiguous or imputeTS::na.mean)
 #' @param save_fc_to_file A string, directory to which results can be saved as text files
 #' @param time_id A POSIXct, created with \code{\link[base]{Sys.time}} and appended to results
-#' @param use_parallel A boolean, apply parallel processing
+#' @param nb_cores An integer, the number of CPU cores to use for parallel processing
+#' @param ... Additional arguments to be passed to the function
 #' @examples
-#' ## Not run:
+#' \dontrun{
 #' library(datasets)
 #'
 #' # Generate forecasts on future dates
@@ -45,7 +45,7 @@
 #'                                                        upper = c(0.3, 0.2,
 #'                                                                  0.2, 0.98),
 #'                                         stl_arg = list(s.window = "periodic")))
-#'                       use_parallel = TRUE)
+#'                       nb_cores = 2)
 #'
 #' # Generate forecasts on past dates to analyze performance
 #' fc <- generate_fc_par(AirPassengers,
@@ -59,7 +59,7 @@
 #'                       fc_horizon = 6,
 #'                       backtesting_opt = list(use_bt = TRUE,
 #'                                              nb_iters = 6))
-#' ## End (Not run)
+#' }
 #' @return A tsForecastR object
 #' @export
 generate_fc_par <- function(mts_data, fc_horizon = 12,
@@ -116,8 +116,8 @@ generate_fc_par <- function(mts_data, fc_horizon = 12,
                                  "save_fc_to_file",
                                  "preprocess_fct",
                                  "time_id",
-                                 "models_args")) %dopar% {
-     library("tsForecastR")
+                                 "models_args"),
+                     .packages = "tsForecastR") %dopar% {
      model_names_parall_proc <- model_names[model_names != "automl_h2o"]
      ts_data_xts <- tsForecastR::univariate_xts(mts_data_xts, ind)
      ts_colname <- base::colnames(ts_data_xts)

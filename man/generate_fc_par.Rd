@@ -2,8 +2,7 @@
 % Please edit documentation in R/fc_engine_par.R
 \name{generate_fc_par}
 \alias{generate_fc_par}
-\title{Forecasting Engine API
-Forecasting Engine API (parallel processing)}
+\title{Forecasting Engine API (parallel processing)}
 \usage{
 generate_fc_par(
   mts_data,
@@ -26,6 +25,8 @@ generate_fc_par(
 
 \item{fc_horizon}{An integer, the forcasting horizon}
 
+\item{xreg_data}{A univariate or multivariate ts, mts or xts object, optional external regressors}
+
 \item{backtesting_opt}{A list, options for the backtesting program:
 
  use_bt - A boolean, to determine whether to apply backtesting or to generate forcasts on future dates
@@ -39,25 +40,28 @@ generate_fc_par(
 
 \item{model_names}{A list or character, names of models to apply}
 
+\item{preprocess_fct}{A function, a custom function can be used to determine how missing values should be dealt with.
+(e.g. timeSeries::na.contiguous or imputeTS::na.mean)}
+
+\item{models_args}{A list, optional arguments to pass to the models}
+
 \item{save_fc_to_file}{A string, directory to which results can be saved as text files}
 
 \item{time_id}{A POSIXct, created with \code{\link[base]{Sys.time}} and appended to results}
 
-\item{xreg_xts}{A univariate or multivariate ts, mts or xts object, optional external regressors}
+\item{nb_cores}{An integer, the number of CPU cores to use for parallel processing}
 
-\item{model_args}{A list, optional arguments to pass to the models}
-
-\item{use_parallel}{A boolean, apply parallel processing}
+\item{...}{Additional arguments to be passed to the function}
 }
 \value{
-A list
+A tsForecastR object
 }
 \description{
 Function which enables the user to select different forecasting algorithms ranging from
 traditional time series models (i.e. ARIMA, ETS, STL) to machine learning methods (i.e. LSTM, AutoML).
 }
 \examples{
-## Not run:
+\dontrun{
 library(datasets)
 
 # Generate forecasts on future dates
@@ -78,7 +82,7 @@ fc <- generate_fc_par(AirPassengers,
                                                        upper = c(0.3, 0.2,
                                                                  0.2, 0.98),
                                         stl_arg = list(s.window = "periodic")))
-                      use_parallel = TRUE)
+                      nb_cores = 2)
 
 # Generate forecasts on past dates to analyze performance
 fc <- generate_fc_par(AirPassengers,
@@ -92,5 +96,5 @@ fc <- generate_fc_par(AirPassengers,
                       fc_horizon = 6,
                       backtesting_opt = list(use_bt = TRUE,
                                              nb_iters = 6))
-## End (Not run)
+}
 }
