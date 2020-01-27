@@ -33,9 +33,6 @@ on_failure:
   - appveyor PushArtifact failure.zip
 
 artifacts:
-  - path: '*.Rcheck\**\*.log'
-    name: Logs
-
   - path: '*.Rcheck\**\*.out'
     name: Logs
 
