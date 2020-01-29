@@ -27,7 +27,7 @@ devtools::install_github("xavierkamp/parTsForecastR")
 ```
 ### __Dependency__
 
-This package requires the installation of 'tsForecastR'.
+This package requires the R package 'tsForecastR'.
 
 ## __Function__
 

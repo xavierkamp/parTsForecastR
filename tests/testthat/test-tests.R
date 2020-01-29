@@ -32,7 +32,7 @@ test_that("generate_fc_par_works", {
                "tsForecastR")
   expect_equal(class(generate_fc_par(xts_na_data,
                                      model_names = model_names,
-                                     preprocess_fct = timeSeries::na.contiguous)),
+                                     prepro_fct = timeSeries::na.contiguous)),
                "tsForecastR")
 })
 
