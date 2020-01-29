@@ -38,14 +38,14 @@ Example:
 ``` r
 library(datasets)
 
-ts_data <- stats::ts(seq(1:144), start = c(1, 1), frequency = 1)
+ts_data <- stats::ts(seq(1:144), start = c(1949, 1), frequency = 12)
 mts_data <- cbind(ts_data, AirPassengers)
 
 library(parTsForecastR)
 # Generate forecasts on twelve periods
 fc <- generate_fc_par(mts_data,
                       fc_horizon = 12)
-df <- save_as_df(fc)
+df <- tsForecastR::save_as_df(fc)
 print(df)
 
 # Generate forecasts on past data with a rolling window and six iterations
@@ -54,6 +54,6 @@ fc <- generate_fc_par(mts_data,
                       fc_horizon = 12,
                       backtesting_opt = list(use_bt = TRUE,
                                              nb_iters = 6))
-df <- save_as_df(fc)
+df <- tsForecastR::save_as_df(fc)
 print(df)
 ```
